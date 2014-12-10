@@ -657,6 +657,8 @@ _.extend(PackageSource.prototype, {
           return;
         }
 
+        options.pluginType = "build";
+
         // XXX probably want further type checking
         self.pluginInfo[options.name] = options;
       },
@@ -666,6 +668,71 @@ _.extend(PackageSource.prototype, {
        */
       _transitional_registerBuildPlugin: function (options) {
         this.registerBuildPlugin(options);
+      },
+
+      // Define a cli plugin. A plugin extends the meteor command line with
+      // commands from community packages. For example {{XXX Example Here}}
+      //
+      // This api is not supported by the mdg so won't be available in most
+      // meteor builds
+      // 
+      // Options:
+      // - name: a name for this plugin. required (cosmetic -- string)
+      // - use: package to use for the plugin (names, as strings)
+      // - sources: sources for the plugin (array of string)
+      // - npmDependencies: map from npm package name to required
+      //   version (string)
+
+      /**
+       * @summary Define a cli plugin. A cli plugin extends the meteor command
+       * line with custom, community built commands and options.
+       * @param  {Object} [options]
+       * @param {String} options.name A cosmetic name, must be unique in the
+       * package.
+       * @param {String|String[]} options.use Meteor packages that this
+       * plugin uses, independent of the packages specified in
+       * [api.onUse](#pack_onUse).
+       * @param {String[]} options.sources The source files that make up the
+       * build plugin, independent from [api.addFiles](#pack_addFiles).
+       * @param {Object} options.npmDependencies An object where the keys
+       * are NPM package names, and the keys are the version numbers of
+       * required NPM packages, just like in [Npm.depends](#Npm-depends).
+       * @memberOf Package
+       * @locus package.js
+       */
+      registerCliPlugin: function (options) {
+        // Tests don't have plugins; plugins initialized in the control file
+        // belong to the package and not to the test. (This will be less
+        // confusing in the new control file format).
+        if (self.isTest) {
+          return;
+        }
+
+        if (! ('name' in options)) {
+          buildmessage.error("build plugins require a name",
+                             { useMyCaller: true });
+          // recover by ignoring plugin
+          return;
+        }
+
+        if (options.name in self.pluginInfo) {
+          buildmessage.error("this package already has a plugin named '" +
+                             options.name + "'",
+                             { useMyCaller: true });
+          // recover by ignoring plugin
+          return;
+        }
+
+        if (options.name.match(/\.\./) || options.name.match(/[\\\/]/)) {
+          buildmessage.error("bad plugin name", { useMyCaller: true });
+          // recover by ignoring plugin
+          return;
+        }
+
+        options.pluginType = "cli";
+
+        // XXX probably want further type checking
+        self.pluginInfo[options.name] = options;
       },
 
       includeTool: function () {

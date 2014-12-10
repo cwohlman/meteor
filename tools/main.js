@@ -241,6 +241,8 @@ require('./commands.js');
 require('./commands-packages.js');
 require('./commands-useful.js');
 
+// XXX We could define our commands here.
+
 ///////////////////////////////////////////////////////////////////////////////
 // Long-form help
 ///////////////////////////////////////////////////////////////////////////////
@@ -514,6 +516,9 @@ Fiber(function () {
   // the command. I would make this change right now but we're on a
   // tight timetable for 1.0 and there is no advantage to doing it now
   // rather than later. #ImprovingCrossVersionOptionParsing
+
+  // XXX we need to define commands before this point, or miss out on
+  // this special parsing
 
   var isBoolean = { "--help": true };
   var walkCommands = function (node) {
@@ -1005,6 +1010,9 @@ Fiber(function () {
 
   var commandName = '';
   var command = null;
+
+  // XXX this is the last point at which we could load community commands
+  // and not have to modify the existing command processing code.
 
   // Check for a command like '--arch' or '--version'. Make sure
   // it stands alone. (And this is ignored if you've passed --help.)
