@@ -784,3 +784,7 @@ Options:
   --json       return information in JSON form instead of opening a shell
   --minutes    specify the length of the reservation
   --verbose    print all output from commands
+
+>>> clone
+
+FIXME This is the clone help text

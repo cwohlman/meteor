@@ -239,6 +239,7 @@ main.registerCommand = function (options, func) {
 
 require('./commands.js');
 require('./commands-packages.js');
+require('./commands-useful.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // Long-form help
