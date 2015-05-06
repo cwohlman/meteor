@@ -49,4 +49,5 @@ Package.onTest(function (api) {
 
   api.addFiles('view_tests.js');
   api.addFiles('render_tests.js', 'client');
+  api.addFiles('domrange_tests.js', 'client');
 });
