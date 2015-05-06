@@ -1,3 +1,37 @@
+// Monkey patch wrapAll to support DOMRange.containsElement
+// e.g. if $div is contained in a DOMRange, then $div.wrap('<div>') should
+// also be contained in that dom range.
+$.fn.wrapAll = function ( html ) {
+  if ( jQuery.isFunction( html ) ) {
+      return this.each(function(i) {
+          jQuery(this).wrapAll( html.call(this, i) );
+      });
+  }
+
+  if ( this[0] ) {
+      // The elements to wrap the target around
+      var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
+      var self = this[0];
+
+      if ( this[0].parentNode ) {
+          wrap.insertBefore( this[0] );
+      }
+
+      wrap.map(function() {
+          var elem = this;
+
+          elem.$blaze_range = self.$blaze_range;
+
+          while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
+              elem = elem.firstChild;
+          }
+
+          return elem;
+      }).append( this );
+  }
+
+  return this;
+};
 
 // A constant empty array (frozen if the JS engine supports it).
 var _emptyArray = Object.freeze ? Object.freeze([]) : [];
