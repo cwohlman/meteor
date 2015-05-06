@@ -32,6 +32,9 @@ if (Meteor.isClient) {
     div.removeChild(other);
     child.appendChild(other);
     test.equal(v._domrange.containsElement(other), true);
+
+    $(child).wrap('<div>');
+    test.equal(v._domrange.containsElement(child), true);
   });
 
 }
